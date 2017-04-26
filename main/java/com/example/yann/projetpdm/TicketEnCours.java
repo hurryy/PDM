@@ -21,18 +21,19 @@ import java.util.ArrayList;
 public class TicketEnCours extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    Personne personneEnCours;
-    Ticket ticketEnCours;
+    private Personne personneEnCours;
+    private Ticket ticketEnCours;
+    /*TextView txtImmat;
+    TextView txtTime;*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ticket_en_cours);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView txtImmat = (TextView)findViewById(R.id.ticket_en_cours_lblImmatVoiture);
+        TextView txtTime = (TextView)findViewById(R.id.ticket_en_cours_temps);
         setSupportActionBar(toolbar);
-        TextView txtImmat = (TextView) findViewById(R.id.ticket_en_cours_lblImmatVoiture);
-        TextView txtTime = (TextView) findViewById(R.id.ticket_en_cours_tempsRestant);
-        personneEnCours = new Personne(getApplicationContext(), Long.valueOf(1));
-        initControls();
+
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,12 +51,13 @@ public class TicketEnCours extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        personneEnCours = new Personne(getApplicationContext(), Long.valueOf(1));
+        initControls(txtImmat, txtTime);
     }
 
-    private void initControls(){
+    private void initControls(TextView txtImmat, TextView txtTime){
         ArrayList<Ticket> lTV = personneEnCours.getTicketsValides();
-        TextView lblImmat = (TextView) findViewById(R.id.ticket_en_cours_lblImmatVoiture);
-        TextView lblTemps = (TextView) findViewById(R.id.ticket_en_cours_temps);
 
         if(lTV.size() >= 1) {
             ticketEnCours = lTV.get(0);
@@ -64,8 +66,8 @@ public class TicketEnCours extends AppCompatActivity
             startActivity(intent);
         }
         Voiture voiture = new Voiture(getApplicationContext(), ticketEnCours.getIdVoiture());
-        lblImmat.setText(voiture.getImmatriculation());
-        lblTemps.setText();
+        txtImmat.setText(voiture.getImmatriculation());
+        txtTime.setText(String.valueOf(ticketEnCours.getTempsRestant()));
     }
 
     @Override

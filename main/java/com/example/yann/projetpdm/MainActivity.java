@@ -20,25 +20,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 
+import com.example.yann.projetpdm.classes.DateHelper;
 import com.example.yann.projetpdm.classes.Personne;
 import com.example.yann.projetpdm.classes.Ticket;
 import com.example.yann.projetpdm.classes.Voiture;
 import com.example.yann.projetpdm.classes.Zone;
-import com.example.yann.projetpdm.persistence.PersonneDAO;
-import com.example.yann.projetpdm.persistence.VoitureDAO;
-import com.example.yann.projetpdm.persistence.ZoneDAO;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private ArrayList<Zone> zones;
     private ArrayList<Voiture> voitures;
-
+    Personne personneEnCours;
     //public int etat =0;
 
     @Override
@@ -47,6 +44,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        personneEnCours = new Personne(getApplicationContext(), Long.valueOf(1));
+        if(personneEnCours.aTicketEnCours()) {
+            Intent intent = new Intent(MainActivity.this, TicketEnCours.class);  //Lancer l'activité DisplayVue
+            startActivity(intent);    //Afficher la vue
+        }
         initControls();
 
 
@@ -157,7 +159,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initSpinners() {
-        if(Personne.getConducteurs(getApplicationContext()).size() <= 0) {
+        if (Personne.getConducteurs(getApplicationContext()).size() <= 0) {
             Personne p12 = new Personne(getApplicationContext(), "Test", "test", "0606060606", "test@mail.com", "test", Personne.CONDUCTEUR);
             Zone z1 = new Zone(getApplicationContext(), "parking UJF", 1.2f, "8:00", "18:00");
             Zone z2 = new Zone(getApplicationContext(), "parking UGA", 0.5f, "9:00", "19:00");
@@ -222,17 +224,20 @@ public class MainActivity extends AppCompatActivity
                 Ticket ticket = new Ticket(getApplicationContext());
                 ticket.setIdVoiture(voitures.get(spnVoiture.getSelectedItemPosition()).getId());
                 ticket.setIdZone(zones.get(spnZone.getSelectedItemPosition()).getId());
-                ticket.setDureeInitiale(nbPckH.getValue()*60 + nbPckMin.getValue());
+                ticket.setDureeInitiale(nbPckH.getValue() * 60 + nbPckMin.getValue());
                 ticket.setDureeSupp(0);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
-                Date dateDemande = new Date();
+                SimpleDateFormat dateFormat = DateHelper.getSimpleDateFormat();
+                Long dateDemande = new Date().getTime();
                 ticket.setDateDemande(dateDemande);
                 ticket.setHeureDebut(dateDemande);
-                ticket.setCoutTotal(zones.get(spnZone.getSelectedItemPosition()).getTarifHoraire()*(ticket.getDureeInitiale()/60));
+                ticket.setCoutTotal(zones.get(spnZone.getSelectedItemPosition()).getTarifHoraire() * (ticket.getDureeInitiale() / 60));
                 ticket.enregistrer();
-                Intent intent = new Intent(MainActivity.this, TicketEnCours.class);  //Lancer l'activité DisplayVue
-                startActivity(intent);    //Afficher la vue
+                lunchTicketEnCours();
             }
         });
+    }
+    private void lunchTicketEnCours(){
+        Intent intent = new Intent(MainActivity.this, TicketEnCours.class);  //Lancer l'activité DisplayVue
+        startActivity(intent);    //Afficher la vue
     }
 }

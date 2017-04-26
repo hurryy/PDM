@@ -13,8 +13,8 @@ import java.util.Date;
  */
 public class Ticket {
     private long id;
-    private Date dateDemande;
-    private Date heureDebut;
+    private Long dateDemande;
+    private Long heureDebut;
     /**
      * duree en minute
      */
@@ -25,7 +25,7 @@ public class Ticket {
     private long idZone;
     private TicketDAO tD;
 
-    public Ticket(Context context, Date dateDemande, Date heureDebut, int dureeInitiale, int dureeSupp, float coutTotal, long idVoiture, long idZone) {
+    public Ticket(Context context, Long dateDemande, Long heureDebut, int dureeInitiale, int dureeSupp, float coutTotal, long idVoiture, long idZone) {
         this.dateDemande = dateDemande;
         this.heureDebut = heureDebut;
         this.dureeInitiale = dureeInitiale;
@@ -42,7 +42,7 @@ public class Ticket {
         this.id = tD.ajouter(this);
     }
 
-    public Ticket(Context context, long id, Date dateDemande, Date heureDebut, int dureeInitiale, int dureeSupp, float coutTotal, long idVoiture, long idZone) {
+    public Ticket(Context context, long id, Long dateDemande, Long heureDebut, int dureeInitiale, int dureeSupp, float coutTotal, long idVoiture, long idZone) {
         this.id = id;
         this.dateDemande = dateDemande;
         this.heureDebut = heureDebut;
@@ -56,14 +56,16 @@ public class Ticket {
 
     public boolean isValid(){
         SimpleDateFormat dateFormat = DateHelper.getSimpleDateFormat();
-        return  this.getDateFin().compareTo(new Date()) >= 0;
+        return  this.getDateFin().compareTo(new Date().getTime()) >= 0;
     }
 
-    public Date getDateFin(){
-        Date dateDebut = this.heureDebut;
-        Date dateFin = dateDebut;
-        dateFin.setTime(dateDebut.getTime() + DateHelper.convertMinToMilliseconds(this.getDureeInitiale()) + DateHelper.convertMinToMilliseconds(this.getDureeSupp()));
-        return dateFin;
+    public Long getDateFin(){
+        Long dateDebut = this.heureDebut;
+        Date dDebut = new Date();
+        dDebut.setTime(dateDebut);
+        Date dateFin = dDebut;
+        dateFin.setTime(dDebut.getTime() + DateHelper.convertMinToMilliseconds(this.getDureeInitiale()) + DateHelper.convertMinToMilliseconds(this.getDureeSupp()));
+        return dateFin.getTime();
     }
 
     public static ArrayList<Ticket> getTicketsVoiture(Context context, long idVoiture){
@@ -92,19 +94,19 @@ public class Ticket {
         this.id = id;
     }
 
-    public Date getDateDemande() {
+    public Long getDateDemande() {
         return dateDemande;
     }
 
-    public void setDateDemande(Date dateDemande) {
+    public void setDateDemande(Long dateDemande) {
         this.dateDemande = dateDemande;
     }
 
-    public Date getHeureDebut() {
+    public Long getHeureDebut() {
         return heureDebut;
     }
 
-    public void setHeureDebut(Date heureDebut) {
+    public void setHeureDebut(Long heureDebut) {
         this.heureDebut = heureDebut;
     }
 
@@ -128,6 +130,15 @@ public class Ticket {
      */
     public void setDureeSupp(int dureeSupp) {
         this.dureeSupp = dureeSupp;
+    }
+
+    /**
+     * Retourne le temps restant en minutes
+     * @return nombre de minutes restantes
+     */
+    public long getTempsRestant()
+    {
+        return DateHelper.convertMillisecondsToMinutes(this.getDateFin()- new Date().getTime());
     }
 
     public float getCoutTotal() {
