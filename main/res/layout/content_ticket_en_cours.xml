@@ -47,8 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/ticket_en_cours_lblImmatVoiture"
-                android:layout_weight="1"
-                android:textAlignment="viewEnd"/>
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <LinearLayout
@@ -68,8 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/ticket_en_cours_temps"
-                android:layout_weight="1"
-                android:textAlignment="viewEnd"/>
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <LinearLayout

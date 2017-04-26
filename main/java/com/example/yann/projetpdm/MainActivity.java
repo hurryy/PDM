@@ -157,10 +157,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initSpinners() {
-        /*Personne p12 = new Personne(getApplicationContext(), "Test","test","0606060606","test@mail.com","test", Personne.CONDUCTEUR);
-        Zone z1 = new Zone(getApplicationContext(), "parking UJF", 1.2f, "8:00", "18:00");
-        Zone z2 = new Zone(getApplicationContext(), "parking UGA", 0.5f, "9:00", "19:00");
-        Voiture v1 = new Voiture(getApplicationContext(), "EE-666-EE","Karl","Opel","","52",1);*/
+        if(Personne.getConducteurs(getApplicationContext()).size() <= 0) {
+            Personne p12 = new Personne(getApplicationContext(), "Test", "test", "0606060606", "test@mail.com", "test", Personne.CONDUCTEUR);
+            Zone z1 = new Zone(getApplicationContext(), "parking UJF", 1.2f, "8:00", "18:00");
+            Zone z2 = new Zone(getApplicationContext(), "parking UGA", 0.5f, "9:00", "19:00");
+            Voiture v1 = new Voiture(getApplicationContext(), "EE-666-EE", "Karl", "Opel", "", "52", 1);
+        }
 
         Spinner spnVoiture = (Spinner) findViewById(R.id.spnVoiture);
         Spinner spnZone = (Spinner) findViewById(R.id.spnZone);
