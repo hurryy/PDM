@@ -8,8 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.yann.projetpdm.classes.Ticket;
 import com.example.yann.projetpdm.classes.DateHelper;
 
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -31,8 +31,8 @@ public class TicketDAO {
     public static final String KEY = "_ID";
     public static String SQL_CREATE_ENTRIES = " create table " + TABLE_NAME + " (" +
                 KEY + " integer primary key autoincrement," +
-                dateDemande + " text," +
-                heureDebut + " text," +
+                dateDemande + " integer," +
+                heureDebut + " integer," +
                 dureeInitiale + " integer," +
                 dureeSupp + " integer," +
                 coutTotal + " real," +
@@ -120,16 +120,7 @@ public class TicketDAO {
 
     protected Ticket cursorToTicket(Cursor c){
         Ticket t ;
-        SimpleDateFormat dateFormat = DateHelper.getSimpleDateFormat();
-        Date dateDemande = new Date();
-        Date dateDebut = new Date();
-        try {
-            dateDemande = dateFormat.parse(c.getString(1));
-            dateDebut = dateFormat.parse(c.getString(2));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        t = new Ticket(context, c.getLong(0), dateDemande, dateDebut, c.getInt(3),
+        t = new Ticket(context, c.getLong(0), c.getLong(1), c.getLong(2), c.getInt(3),
                 c.getInt(4), c.getFloat(5), c.getLong(6), c.getLong(7));
 
         return t;

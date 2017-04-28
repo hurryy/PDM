@@ -1,5 +1,6 @@
 package com.example.yann.projetpdm;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,23 +14,26 @@ import android.widget.TextView;
 
 import com.example.yann.projetpdm.classes.Personne;
 import com.example.yann.projetpdm.classes.Ticket;
+import com.example.yann.projetpdm.classes.Voiture;
 
 import java.util.ArrayList;
 
 public class TicketEnCours extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private Personne personneEnCours;
+    private Ticket ticketEnCours;
+    /*TextView txtImmat;
+    TextView txtTime;*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ticket_en_cours);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView txtImmat = (TextView)findViewById(R.id.ticket_en_cours_lblImmatVoiture);
+        TextView txtTime = (TextView)findViewById(R.id.ticket_en_cours_temps);
         setSupportActionBar(toolbar);
-        TextView txtImmat = (TextView) findViewById(R.id.ticket_en_cours_lblImmatVoiture);
-        TextView txtTime = (TextView) findViewById(R.id.ticket_en_cours_tempsRestant);
-        Personne p = new Personne(getApplicationContext(), Long.valueOf(1));
-        ArrayList<Ticket> lT = p.getTickets();
-        ArrayList<Ticket> lTV = p.getTicketsValides();
+
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +51,23 @@ public class TicketEnCours extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        personneEnCours = new Personne(getApplicationContext(), Long.valueOf(1));
+        initControls(txtImmat, txtTime);
+    }
+
+    private void initControls(TextView txtImmat, TextView txtTime){
+        ArrayList<Ticket> lTV = personneEnCours.getTicketsValides();
+
+        if(lTV.size() >= 1) {
+            ticketEnCours = lTV.get(0);
+        } else if (lTV.size() < 1){
+            Intent intent = new Intent(TicketEnCours.this, MainActivity.class);  //Lancer l'activité DisplayVue
+            startActivity(intent);
+        }
+        Voiture voiture = new Voiture(getApplicationContext(), ticketEnCours.getIdVoiture());
+        txtImmat.setText(voiture.getImmatriculation());
+        txtTime.setText(String.valueOf(ticketEnCours.getTempsRestant()));
     }
 
     @Override

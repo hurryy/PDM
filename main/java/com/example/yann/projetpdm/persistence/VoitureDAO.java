@@ -81,10 +81,11 @@ public class VoitureDAO {
     public Voiture getVoiture (long idVoiture){
         SQLiteDatabase mDB = new DatabaseObject(context).open();
         Cursor c = mDB.rawQuery("select " + listeAttributs + " from " + this.TABLE_NAME +
-                " where " + this.KEY + " = ?" , new String[] {String.valueOf(idConducteur)});
+                " where " + this.KEY + " = ?" , new String[] {String.valueOf(idVoiture)});
         c.moveToNext();
+        Voiture v = cursorToVoiture(c);
         c.close();
-        return cursorToVoiture(c);
+        return v;
     }
 
     protected Voiture cursorToVoiture(Cursor c){
