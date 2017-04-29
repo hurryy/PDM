@@ -1,21 +1,30 @@
 package com.example.yann.projetpdm;
 
 import android.app.ActivityManager;
+import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
+import com.example.yann.projetpdm.Helper.DateHelper;
 import com.example.yann.projetpdm.Helper.TimeHelper;
 import com.example.yann.projetpdm.classes.Personne;
 import com.example.yann.projetpdm.classes.Ticket;
@@ -23,32 +32,31 @@ import com.example.yann.projetpdm.classes.Voiture;
 import com.example.yann.projetpdm.classes.Zone;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TicketEnCours extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private Personne personneEnCours;
     private Ticket ticketEnCours;
     TextView txtImmat;
-    TextView txtTime;
+    TextView txtRemainTime;
+    EditText txtTime;
     TextView txtParking;
+    Button btnTimePicker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_ticket_en_cours);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        txtImmat = (TextView)findViewById(R.id.ticket_en_cours_lblImmatVoiture);
-        txtTime = (TextView)findViewById(R.id.ticket_en_cours_temps);
-        txtParking = (TextView) findViewById(R.id.ticket_en_cours_NomZone);
         setSupportActionBar(toolbar);
 
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+        txtImmat = (TextView)findViewById(R.id.ticket_en_cours_lblImmatVoiture);
+        txtRemainTime = (TextView)findViewById(R.id.ticket_en_cours_temps);
+        txtParking = (TextView) findViewById(R.id.ticket_en_cours_NomZone);
+        btnTimePicker=(Button)findViewById(R.id.btn_time);
+        txtTime=(EditText)findViewById(R.id.in_time);
+        btnTimePicker.setOnClickListener(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -61,6 +69,50 @@ public class TicketEnCours extends AppCompatActivity
 
         personneEnCours = new Personne(getApplicationContext(), Long.valueOf(1));
         initControls();
+                /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });*/
+                initDialog();
+    }
+
+    private void initDialog(){
+        View npView = getLayoutInflater().inflate(R.layout.number_picker_dialog_layout, null);
+        NumberPicker hourPicker = (NumberPicker) npView.findViewById(R.id.number_picker_dialog_layout_nbPckH);
+        hourPicker.setMaxValue(TimeHelper.MAX_HOUR);
+        hourPicker.setMinValue(0);
+        NumberPicker minPicker = (NumberPicker) npView.findViewById(R.id.number_picker_dialog_layout_nbPckMin);
+        minPicker.setMaxValue(TimeHelper.MAX_MIN);
+        minPicker.setMinValue(0);
+        TextView txtHeureFin = (TextView) npView.findViewById(R.id.number_picker_dialog_layout_txtHeureFin);
+        updateHeureFinDialog(txtHeureFin);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Prolonger:");
+        builder.setView(npView);
+
+        hourPicker.setOnValueChangedListener(new android.widget.NumberPicker.OnValueChangeListener() {
+                                                 @Override
+                                                 public void onValueChange(android.widget.NumberPicker picker, final int oldVal, final int newVal) {
+                                                     final Handler handler = new Handler();
+                                                     handler.postDelayed(new Runnable() {
+                                                         public void run() {
+
+                                                         }
+                                                     }, 500);//set time
+                                                 }
+                                             });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void updateHeureFinDialog(TextView txt){
+        Date dateFin = DateHelper.convertMillisecondsToDate(ticketEnCours.getDateFin());
+        txt.setText(dateFin.getHours() + ":" + dateFin.getMinutes());
     }
 
     private void initControls(){
@@ -89,7 +141,7 @@ public class TicketEnCours extends AppCompatActivity
     }
 
     public void initTextTime(){
-        txtTime.setText(TimeHelper.formatAffichageHeure(ticketEnCours.getTempsRestantMs()));
+        txtRemainTime.setText(TimeHelper.formatAffichageHeure(ticketEnCours.getTempsRestantMs()));
     }
 
     private void initTimer(){
@@ -198,5 +250,27 @@ public class TicketEnCours extends AppCompatActivity
             }
         }
         return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == btnTimePicker) {
+
+            // Get Current Time
+
+
+            // Launch Time Picker Dialog
+            TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                    new TimePickerDialog.OnTimeSetListener() {
+
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay,
+                                              int minute) {
+
+                            txtTime.setText(hourOfDay + ":" + minute);
+                        }
+                    }, 0, 0, false);
+            timePickerDialog.show();
+        }
     }
 }

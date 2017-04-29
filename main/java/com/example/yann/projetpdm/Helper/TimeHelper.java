@@ -4,6 +4,9 @@ public abstract class TimeHelper {
     public static final int SECOND = 0;
     public static final int MINUTE = 1;
 
+    public static final int MAX_HOUR = 23;
+    public static final int MAX_MIN = 59;
+
     public static Integer[] getMinSec(long timeInMs){
         int secs = (int) (timeInMs / 1000);
         int mins = secs / 60;

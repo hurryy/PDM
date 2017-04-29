@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 
 import com.example.yann.projetpdm.Helper.DateHelper;
+import com.example.yann.projetpdm.Helper.TimeHelper;
 import com.example.yann.projetpdm.classes.Personne;
 import com.example.yann.projetpdm.classes.Ticket;
 import com.example.yann.projetpdm.classes.Voiture;
@@ -157,11 +158,11 @@ public class MainActivity extends AppCompatActivity
     private void initNumberPickers() {
         NumberPicker nbPckH = (NumberPicker) findViewById(R.id.nbPckH);
         nbPckH.setMinValue(0);
-        nbPckH.setMaxValue(23);
+        nbPckH.setMaxValue(TimeHelper.MAX_HOUR);
         nbPckH.setValue(0);
         NumberPicker nbPckMin = (NumberPicker) findViewById(R.id.nbPckMin);
         nbPckMin.setMinValue(0);
-        nbPckMin.setMaxValue(59);
+        nbPckMin.setMaxValue(TimeHelper.MAX_MIN);
         nbPckMin.setValue(30);
     }
 
