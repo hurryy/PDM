@@ -6,12 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.yann.projetpdm.classes.Ticket;
-import com.example.yann.projetpdm.classes.DateHelper;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by Yann_TOUR on 25/03/2017.

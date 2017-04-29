@@ -2,6 +2,8 @@ package com.example.yann.projetpdm.classes;
 
 import android.content.Context;
 
+import com.example.yann.projetpdm.Helper.DateHelper;
+import com.example.yann.projetpdm.Helper.TimeHelper;
 import com.example.yann.projetpdm.persistence.TicketDAO;
 
 import java.text.SimpleDateFormat;
@@ -64,7 +66,7 @@ public class Ticket {
         Date dDebut = new Date();
         dDebut.setTime(dateDebut);
         Date dateFin = dDebut;
-        dateFin.setTime(dDebut.getTime() + DateHelper.convertMinToMilliseconds(this.getDureeInitiale()) + DateHelper.convertMinToMilliseconds(this.getDureeSupp()));
+        dateFin.setTime(dDebut.getTime() + TimeHelper.minToMilliseconds(this.getDureeInitiale()) + TimeHelper.minToMilliseconds(this.getDureeSupp()));
         return dateFin.getTime();
     }
 
@@ -136,9 +138,14 @@ public class Ticket {
      * Retourne le temps restant en minutes
      * @return nombre de minutes restantes
      */
-    public long getTempsRestant()
+    public long getTempsTotalRestantMin()
     {
-        return DateHelper.convertMillisecondsToMinutes(this.getDateFin()- new Date().getTime());
+        return TimeHelper.millisecondsToMinutes(this.getDateFin()- new Date().getTime());
+    }
+
+    public long getTempsRestantMs()
+    {
+        return this.getDateFin()- new Date().getTime();
     }
 
     public float getCoutTotal() {
@@ -175,5 +182,4 @@ public class Ticket {
     public void supprimer(){
         tD.supprimer(this);
     }
-
 }

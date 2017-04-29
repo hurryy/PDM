@@ -1,7 +1,6 @@
 package com.example.yann.projetpdm;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,7 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 
-import com.example.yann.projetpdm.classes.DateHelper;
+import com.example.yann.projetpdm.Helper.DateHelper;
 import com.example.yann.projetpdm.classes.Personne;
 import com.example.yann.projetpdm.classes.Ticket;
 import com.example.yann.projetpdm.classes.Voiture;
@@ -44,6 +43,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        if (Personne.getConducteurs(getApplicationContext()).size() <= 0) {
+            Personne p12 = new Personne(getApplicationContext(), "Test", "test", "0606060606", "test@mail.com", "test", Personne.CONDUCTEUR);
+            Zone z1 = new Zone(getApplicationContext(), "parking UJF", 1.2f, "8:00", "18:00");
+            Zone z2 = new Zone(getApplicationContext(), "parking UGA", 0.5f, "9:00", "19:00");
+            Voiture v1 = new Voiture(getApplicationContext(), "EE-666-EE", "Karl", "Opel", "", "52", 1);
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         personneEnCours = new Personne(getApplicationContext(), Long.valueOf(1));
         if(personneEnCours.aTicketEnCours()) {
             Intent intent = new Intent(MainActivity.this, TicketEnCours.class);  //Lancer l'activité DisplayVue
@@ -159,12 +166,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initSpinners() {
-        if (Personne.getConducteurs(getApplicationContext()).size() <= 0) {
-            Personne p12 = new Personne(getApplicationContext(), "Test", "test", "0606060606", "test@mail.com", "test", Personne.CONDUCTEUR);
-            Zone z1 = new Zone(getApplicationContext(), "parking UJF", 1.2f, "8:00", "18:00");
-            Zone z2 = new Zone(getApplicationContext(), "parking UGA", 0.5f, "9:00", "19:00");
-            Voiture v1 = new Voiture(getApplicationContext(), "EE-666-EE", "Karl", "Opel", "", "52", 1);
-        }
 
         Spinner spnVoiture = (Spinner) findViewById(R.id.spnVoiture);
         Spinner spnZone = (Spinner) findViewById(R.id.spnZone);

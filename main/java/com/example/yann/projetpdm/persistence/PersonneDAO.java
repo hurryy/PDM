@@ -84,8 +84,11 @@ public class PersonneDAO {
         Cursor c = mDB.rawQuery("select " + listeAttributs + " from " + this.TABLE_NAME +
                 " where " + this.KEY + " = ?"
                 ,new String[]{String.valueOf(idPersonne)});
-        c.moveToNext();
-        Personne p = cursorToPersonne(c);
+        Personne p;
+        if(c.moveToNext())
+            p = cursorToPersonne(c);
+        else
+            return null;
         c.close();
         return p;
     }
