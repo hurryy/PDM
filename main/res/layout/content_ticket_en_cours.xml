@@ -29,21 +29,30 @@
             android:layout_height="wrap_content"
             android:id="@+id/ticket_en_cours_lblTicketEnCours" />
 
+        <Button
+            android:id="@+id/ticket_en_cours_btn_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/btn_date"
+            android:layout_alignStart="@+id/btn_date"
+            android:layout_below="@+id/btn_date"
+            android:text="Prolonger" />
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="Voiture"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/ticket_en_cours_lblVoiture"
-                android:layout_weight="1" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Voiture" />
 
             <TextView
                 android:id="@+id/ticket_en_cours_lblImmatVoiture"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="TextView" />
@@ -56,17 +65,18 @@
 
             <TextView
                 android:id="@+id/ticket_en_cours_lblZone"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Zone" />
 
             <TextView
                 android:id="@+id/ticket_en_cours_NomZone"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="TextView" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -75,35 +85,38 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="Temps restant"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/ticket_en_cours_tempsRestant"
-                android:layout_weight="1" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Temps restant" />
 
             <TextView
-                android:text="TextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/ticket_en_cours_temps"
-                android:layout_weight="1"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TextView" />
         </LinearLayout>
-        <EditText
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/in_time"
-            android:layout_below="@+id/in_date"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SELECT TIME"
-            android:id="@+id/btn_time"
-            android:layout_below="@+id/btn_date"
-            android:layout_alignLeft="@+id/btn_date"
-            android:layout_alignStart="@+id/btn_date" />
+            <TextView
+                android:id="@+id/ticket_en_cours_lblHeureFin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Heure de fin" />
+
+            <TextView
+                android:id="@+id/ticket_en_cours_txtHeureFin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TextView" />
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -23,6 +23,9 @@ public abstract class TimeHelper {
     public static long hourToMilliseconds(long hour){
         return hour * 1000 * 3600;
     }
+    public static long hourToMinutes(long hour){
+        return hour * 60;
+    }
     public static long minToMilliseconds(long min){
         return min * 1000 * 60;
     }

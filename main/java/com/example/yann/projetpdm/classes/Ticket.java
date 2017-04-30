@@ -20,8 +20,8 @@ public class Ticket {
     /**
      * duree en minute
      */
-    private int dureeInitiale;
-    private int dureeSupp;
+    private long dureeInitiale;
+    private long dureeSupp;
     private float coutTotal;
     private long idVoiture;
     private long idZone;
@@ -115,22 +115,22 @@ public class Ticket {
     /**
      * duree initiale en minute
      */
-    public int getDureeInitiale() {
+    public long getDureeInitiale() {
         return dureeInitiale;
     }
 
-    public void setDureeInitiale(int dureeInitiale) {
+    public void setDureeInitiale(long dureeInitiale) {
         this.dureeInitiale = dureeInitiale;
     }
 
-    public int getDureeSupp() {
+    public long getDureeSupp() {
         return dureeSupp;
     }
 
     /**
      * duree supp en minute
      */
-    public void setDureeSupp(int dureeSupp) {
+    public void setDureeSupp(long dureeSupp) {
         this.dureeSupp = dureeSupp;
     }
 

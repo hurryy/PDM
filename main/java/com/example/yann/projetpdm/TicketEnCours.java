@@ -1,13 +1,11 @@
 package com.example.yann.projetpdm;
 
 import android.app.ActivityManager;
-import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,10 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.example.yann.projetpdm.Helper.DateHelper;
 import com.example.yann.projetpdm.Helper.TimeHelper;
@@ -38,11 +34,20 @@ public class TicketEnCours extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private Personne personneEnCours;
     private Ticket ticketEnCours;
-    TextView txtImmat;
-    TextView txtRemainTime;
-    EditText txtTime;
-    TextView txtParking;
-    Button btnTimePicker;
+    private TextView txtImmat;
+    private TextView txtRemainTime;
+    private TextView txtParking;
+    private Button btnTimePicker;
+    private TextView txtHeureFinDialog;
+    private Button btnOk;
+    private NumberPicker hourPicker;
+    private NumberPicker minPicker;
+    private AlertDialog dialog;
+    private Button btnCancel;
+    private TextView txtHeureFin;
+    private Button btn15Min;
+    private Button btn30Min;
+    private Button btn1H;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,13 +55,6 @@ public class TicketEnCours extends AppCompatActivity
         setContentView(R.layout.activity_ticket_en_cours);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        txtImmat = (TextView)findViewById(R.id.ticket_en_cours_lblImmatVoiture);
-        txtRemainTime = (TextView)findViewById(R.id.ticket_en_cours_temps);
-        txtParking = (TextView) findViewById(R.id.ticket_en_cours_NomZone);
-        btnTimePicker=(Button)findViewById(R.id.btn_time);
-        txtTime=(EditText)findViewById(R.id.in_time);
-        btnTimePicker.setOnClickListener(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -77,45 +75,12 @@ public class TicketEnCours extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });*/
-                initDialog();
+
     }
 
-    private void initDialog(){
-        View npView = getLayoutInflater().inflate(R.layout.number_picker_dialog_layout, null);
-        NumberPicker hourPicker = (NumberPicker) npView.findViewById(R.id.number_picker_dialog_layout_nbPckH);
-        hourPicker.setMaxValue(TimeHelper.MAX_HOUR);
-        hourPicker.setMinValue(0);
-        NumberPicker minPicker = (NumberPicker) npView.findViewById(R.id.number_picker_dialog_layout_nbPckMin);
-        minPicker.setMaxValue(TimeHelper.MAX_MIN);
-        minPicker.setMinValue(0);
-        TextView txtHeureFin = (TextView) npView.findViewById(R.id.number_picker_dialog_layout_txtHeureFin);
-        updateHeureFinDialog(txtHeureFin);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Prolonger:");
-        builder.setView(npView);
-
-        hourPicker.setOnValueChangedListener(new android.widget.NumberPicker.OnValueChangeListener() {
-                                                 @Override
-                                                 public void onValueChange(android.widget.NumberPicker picker, final int oldVal, final int newVal) {
-                                                     final Handler handler = new Handler();
-                                                     handler.postDelayed(new Runnable() {
-                                                         public void run() {
-
-                                                         }
-                                                     }, 500);//set time
-                                                 }
-                                             });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    private void updateHeureFinDialog(TextView txt){
-        Date dateFin = DateHelper.convertMillisecondsToDate(ticketEnCours.getDateFin());
-        txt.setText(dateFin.getHours() + ":" + dateFin.getMinutes());
-    }
 
     private void initControls(){
+        getControls();
         initText();
         initTimer();
     }
@@ -137,11 +102,14 @@ public class TicketEnCours extends AppCompatActivity
         Zone zone = new Zone(getApplicationContext(), ticketEnCours.getIdZone());
         txtImmat.setText(voiture.getImmatriculation());
         txtParking.setText(zone.getNom());
+
         initTextTime();
     }
 
     public void initTextTime(){
         txtRemainTime.setText(TimeHelper.formatAffichageHeure(ticketEnCours.getTempsRestantMs()));
+        Date dateFin = DateHelper.convertMillisecondsToDate(ticketEnCours.getDateFin());
+        txtHeureFin.setText(dateFin.getHours() + ":" + dateFin.getMinutes());
     }
 
     private void initTimer(){
@@ -242,6 +210,15 @@ public class TicketEnCours extends AppCompatActivity
         }
     };
 
+    private void getControls(){
+        txtImmat = (TextView)findViewById(R.id.ticket_en_cours_lblImmatVoiture);
+        txtRemainTime = (TextView)findViewById(R.id.ticket_en_cours_temps);
+        txtParking = (TextView) findViewById(R.id.ticket_en_cours_NomZone);
+        btnTimePicker=(Button)findViewById(R.id.ticket_en_cours_btn_time);
+        btnTimePicker.setOnClickListener(this);
+        txtHeureFin = (TextView) findViewById(R.id.ticket_en_cours_txtHeureFin);
+    }
+
     private boolean isServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -255,22 +232,86 @@ public class TicketEnCours extends AppCompatActivity
     @Override
     public void onClick(View v) {
         if (v == btnTimePicker) {
-
-            // Get Current Time
-
-
-            // Launch Time Picker Dialog
-            TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                    new TimePickerDialog.OnTimeSetListener() {
-
-                        @Override
-                        public void onTimeSet(TimePicker view, int hourOfDay,
-                                              int minute) {
-
-                            txtTime.setText(hourOfDay + ":" + minute);
-                        }
-                    }, 0, 0, false);
-            timePickerDialog.show();
+            initDialog();
+        }
+        if (v == btnOk) {
+            long hour = hourPicker.getValue();
+            long minutes = minPicker.getValue();
+            ticketEnCours.setDureeSupp(ticketEnCours.getDureeSupp() + TimeHelper.hourToMinutes(hour) + minutes);
+            ticketEnCours.enregistrer();
+            stopDialog();
+            initControls();
+        }
+        if (v == btnCancel) {
+            stopDialog();
+            initControls();
+        }
+        if (v == btn15Min) {
+            ticketEnCours.setDureeSupp(ticketEnCours.getDureeSupp() + 15);
+            ticketEnCours.enregistrer();
+            stopDialog();
+            initControls();
+        }
+        if (v == btn30Min) {
+            ticketEnCours.setDureeSupp(ticketEnCours.getDureeSupp() + 30);
+            ticketEnCours.enregistrer();
+            stopDialog();
+            initControls();
+        }
+        if (v == btn1H) {
+            ticketEnCours.setDureeSupp(ticketEnCours.getDureeSupp() + 60);
+            ticketEnCours.enregistrer();
+            stopDialog();
+            initControls();
         }
     }
+
+
+
+
+
+/////////////////////////////DIALOG//////////////////////////////////////////////////////////////////
+
+    private void initDialog(){
+        View npView = getLayoutInflater().inflate(R.layout.number_picker_dialog_layout, null);
+
+        hourPicker = (NumberPicker) npView.findViewById(R.id.number_picker_dialog_layout_nbPckH);
+        minPicker = (NumberPicker) npView.findViewById(R.id.number_picker_dialog_layout_nbPckMin);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        txtHeureFinDialog = (TextView) npView.findViewById(R.id.number_picker_dialog_layout_txtHeureFin);
+        btnCancel = (Button) npView.findViewById(R.id.number_picker_dialog_layout_btnCancel);
+        btnOk = (Button) npView.findViewById(R.id.number_picker_dialog_layout_btnValider);
+        btn15Min = (Button) npView.findViewById(R.id.number_picker_dialog_layout_15Min);
+        btn30Min = (Button) npView.findViewById(R.id.number_picker_dialog_layout_30MIN);
+        btn1H = (Button) npView.findViewById(R.id.number_picker_dialog_layout_1H);
+
+        hourPicker.setMaxValue(TimeHelper.MAX_HOUR);
+        hourPicker.setMinValue(0);
+
+        minPicker.setMaxValue(TimeHelper.MAX_MIN);
+        minPicker.setMinValue(0);
+
+        btnOk.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
+        btn15Min.setOnClickListener(this);
+        btn30Min.setOnClickListener(this);
+        btn1H.setOnClickListener(this);
+        updateHeureFinDialog();
+
+        builder.setTitle("Prolonger:");
+        builder.setView(npView);
+
+        dialog = builder.create();
+        dialog.show();
+    }
+
+    public void stopDialog(){
+        dialog.dismiss();
+    }
+
+    private void updateHeureFinDialog(){
+        Date dateFin = DateHelper.convertMillisecondsToDate(ticketEnCours.getDateFin());
+        txtHeureFinDialog.setText(dateFin.getHours() + ":" + dateFin.getMinutes());
+    }
+
 }
