@@ -25,10 +25,12 @@ import com.example.yann.projetpdm.classes.Personne;
 import com.example.yann.projetpdm.classes.Ticket;
 import com.example.yann.projetpdm.classes.Voiture;
 import com.example.yann.projetpdm.classes.Zone;
+import com.example.yann.projetpdm.persistence.MyApp;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -52,10 +54,14 @@ public class MainActivity extends AppCompatActivity
             Voiture v1 = new Voiture(getApplicationContext(), "EE-666-EE", "Karl", "Opel", "", "52", 1);
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        personneEnCours = new Personne(getApplicationContext(), Long.valueOf(1));
+        if(!Personne.dejaConnecte(getApplication(),getApplicationContext())){
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
+        List<String> connexions = ((MyApp)getApplication()).getStorageService().restore(getApplicationContext());
+        personneEnCours = new Personne(getApplicationContext(), Long.valueOf(connexions.get(0)));
         if(personneEnCours.aTicketEnCours()) {
-            Intent intent = new Intent(MainActivity.this, TicketEnCours.class);  //Lancer l'activité DisplayVue
-            startActivity(intent);    //Afficher la vue
+            lunchTicketEnCours();   //Afficher la vue
         }
         initControls();
 
@@ -105,7 +111,9 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            ((MyApp)getApplication()).getStorageService().clear(getApplicationContext());
+            Intent i = new Intent(this,LoginActivity.class);
+            this.startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);
@@ -117,17 +125,11 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_tickets) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_voitures) {
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_compte) {
 
         }
 
@@ -170,12 +172,16 @@ public class MainActivity extends AppCompatActivity
 
         Spinner spnVoiture = (Spinner) findViewById(R.id.spnVoiture);
         Spinner spnZone = (Spinner) findViewById(R.id.spnZone);
-        Personne p1 = Personne.getConducteurs(getApplicationContext()).get(0);
-        voitures = Voiture.getVoituresConducteur(getApplicationContext(), p1.getId());
+        voitures = Voiture.getVoituresConducteur(getApplicationContext(), personneEnCours.getId());
         zones = Zone.getZones(getApplicationContext());
         final ArrayList<Zone> zs = zones;
         ArrayList<String> list = new ArrayList<String>();
         ArrayList<String> list2 = new ArrayList<>();
+
+        if(voitures.size()<=0){
+            //creation voiture
+            t
+        }
 
         for (Voiture v : voitures) {
             list.add(v.getImmatriculation());

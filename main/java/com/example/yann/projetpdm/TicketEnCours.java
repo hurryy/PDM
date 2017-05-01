@@ -26,9 +26,11 @@ import com.example.yann.projetpdm.classes.Personne;
 import com.example.yann.projetpdm.classes.Ticket;
 import com.example.yann.projetpdm.classes.Voiture;
 import com.example.yann.projetpdm.classes.Zone;
+import com.example.yann.projetpdm.persistence.MyApp;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class TicketEnCours extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -52,6 +54,10 @@ public class TicketEnCours extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(!Personne.dejaConnecte(getApplication(),getApplicationContext())){
+            redirect();
+        }
+
         setContentView(R.layout.activity_ticket_en_cours);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -64,8 +70,8 @@ public class TicketEnCours extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        personneEnCours = new Personne(getApplicationContext(), Long.valueOf(1));
+        List<String> connexions = ((MyApp)getApplication()).getStorageService().restore(getApplicationContext());
+        personneEnCours = new Personne(getApplicationContext(), Long.valueOf(connexions.get(0)));
         initControls();
                 /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +115,11 @@ public class TicketEnCours extends AppCompatActivity
     public void initTextTime(){
         txtRemainTime.setText(TimeHelper.formatAffichageHeure(ticketEnCours.getTempsRestantMs()));
         Date dateFin = DateHelper.convertMillisecondsToDate(ticketEnCours.getDateFin());
-        txtHeureFin.setText(dateFin.getHours() + ":" + dateFin.getMinutes());
+        String heureFin = "";
+        heureFin += dateFin.getHours() < 10 ? "0"+dateFin.getHours() : dateFin.getHours();
+        heureFin += ":";
+        heureFin += dateFin.getMinutes() < 10 ? "0" + dateFin.getMinutes() : dateFin.getMinutes();
+        txtHeureFin.setText(heureFin);
     }
 
     private void initTimer(){
@@ -131,7 +141,8 @@ public class TicketEnCours extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.ticket_en_cours, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
+
         return true;
     }
 
@@ -144,8 +155,11 @@ public class TicketEnCours extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            ((MyApp)getApplication()).getStorageService().clear(getApplicationContext());
+            Intent i = new Intent(this,LoginActivity.class);
+            this.startActivity(i);
         }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -156,17 +170,11 @@ public class TicketEnCours extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_tickets) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_voitures) {
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_compte) {
 
         }
 
@@ -266,7 +274,10 @@ public class TicketEnCours extends AppCompatActivity
         }
     }
 
-
+    public void redirect(){
+        Intent intent = new Intent(TicketEnCours.this, LoginActivity.class);
+        startActivity(intent);
+    }
 
 
 

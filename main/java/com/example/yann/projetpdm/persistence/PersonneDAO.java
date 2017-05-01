@@ -128,4 +128,18 @@ public class PersonneDAO {
         SQLiteDatabase mDB = new DatabaseObject(context).open();
         mDB.delete(TABLE_NAME, KEY + " = ?", new String[]{String.valueOf(p.getId())});
     }
+
+    public Personne login(String email, String pass){
+        SQLiteDatabase mDB = new DatabaseObject(context).open();
+        Cursor c = mDB.rawQuery("select " + listeAttributs + " from " + this.TABLE_NAME +
+                        " where " + this.mail + " = ? and " + this.password + " =?"
+                ,new String[]{String.valueOf(email), String.valueOf(pass)});
+        Personne p;
+        if(c.moveToNext())
+            p = cursorToPersonne(c);
+        else
+            return null;
+        c.close();
+        return p;
+    }
 }

@@ -2,7 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.yann.projetpdm">
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
+        android:name=".persistence.MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -12,11 +18,15 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
+
+            <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            -->
+
         </activity>
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
@@ -30,11 +40,21 @@
             android:name=".TicketEnCours"
             android:label="@string/title_activity_ticket_en_cours"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".CreationCompte"
-            android:label="@string/title_activity_creation_compte"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <service android:name=".NotifyService" />
+
+        <activity android:name=".CreationCompte">
+
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
