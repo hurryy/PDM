@@ -31,6 +31,13 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
         if(Personne.dejaConnecte(getApplication(),getApplicationContext())){
             redirect();
         }
@@ -45,7 +52,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener{
         btnInscription.setOnClickListener(this);
         mEmailSignInButton = (Button) findViewById(R.id.login_sign_in_button);
         mEmailSignInButton.setOnClickListener(this);
-
     }
 
     public boolean login(String email, String password){

@@ -41,7 +41,7 @@ public class Voiture {
         this.image = image;
         this.idQRCode = idQRCode;
         this.idConducteur = idConducteur;
-        this.enregistrer();
+        this.id = this.enregistrer();
     }
 
     public Voiture(Context context, long id, String immatriculation, String marque, String model, String image, String idQRCode, long idConducteur) {

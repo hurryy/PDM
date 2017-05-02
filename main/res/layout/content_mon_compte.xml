@@ -4,133 +4,106 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.yann.projetpdm.CreationCompte"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.yann.projetpdm.MonCompte"
+    tools:showIn="@layout/app_bar_mon_compte"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-    <ScrollView
-        android:id="@+id/ScrlView"
-        android:layout_width="336dp"
-        android:layout_height="0dp"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="0dp">
-
+    <ScrollView android:id="@+id/ScrlView" android:layout_width="fill_parent" android:layout_height="fill_parent" >
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="368dp"
             android:layout_height="495dp"
+            android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:orientation="vertical"
-            tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="8dp">
+            tools:layout_editor_absoluteY="8dp"
+            tools:layout_editor_absoluteX="8dp">
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/creation_compte_editPrenom"
+                    android:id="@+id/mon_compte_prenom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:drawableLeft="@android:drawable/ic_menu_edit"
                     android:ems="10"
+                    android:focusable="false"
                     android:hint="Prénom"
                     android:inputType="textPersonName"
                     android:text=""
+                    android:textColor="@drawable/edit_text"
                     tools:layout_editor_absoluteX="8dp"
                     tools:layout_editor_absoluteY="0dp" />
             </android.support.design.widget.TextInputLayout>
-
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
                 <EditText
-                    android:id="@+id/creation_compte_editNom"
+                    android:id="@+id/mon_compte_nom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:drawableLeft="@android:drawable/ic_menu_edit"
                     android:ems="10"
+                    android:focusable="false"
                     android:hint="Nom"
                     android:inputType="textPersonName"
-                    android:text="" />
+                    android:text=""
+                    android:textColor="@drawable/edit_text"
+                    tools:layout_editor_absoluteX="8dp"
+                    tools:layout_editor_absoluteY="0dp" />
             </android.support.design.widget.TextInputLayout>
-
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
                 <EditText
-                    android:id="@+id/creation_compte_editTel"
+                    android:id="@+id/mon_compte_mail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:drawableLeft="@android:drawable/ic_menu_edit"
                     android:ems="10"
-                    android:hint="Téléphone"
-                    android:inputType="phone" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/creation_compte_editMail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
+                    android:focusable="false"
                     android:hint="Email"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"
+                    android:text=""
+                    android:textColor="@drawable/edit_text"
+                    tools:layout_editor_absoluteX="8dp"
+                    tools:layout_editor_absoluteY="0dp" />
             </android.support.design.widget.TextInputLayout>
-
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
                 <EditText
-                    android:id="@+id/creation_compte_editPassword"
+                    android:id="@+id/mon_compte_tel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:drawableLeft="@android:drawable/ic_menu_edit"
                     android:ems="10"
-                    android:hint="Mot de passe"
-                    android:inputType="textPassword"
-                    android:text="" />
-            </android.support.design.widget.TextInputLayout>
+                    android:focusable="false"
+                    android:hint="Téléphone"
+                    android:inputType="phone"
+                    android:text=""
+                    android:textColor="@drawable/edit_text"
+                    tools:layout_editor_absoluteX="8dp"
+                    tools:layout_editor_absoluteY="0dp" />
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/creation_compte_editPassword2"
+                <Button
+                    android:id="@+id/mon_compte_btn_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="Confirmation du mot de passe"
-                    android:inputType="textPassword"
-                    android:text="" />
+                    android:text="Modifier mot de passe" />
             </android.support.design.widget.TextInputLayout>
-
-
-            <Button
-                android:id="@+id/creation_compte_btnValider"
-                android:layout_width="339dp"
-                android:layout_height="wrap_content"
-                android:text="Je m'inscris" />
-
-            <Button
-                android:id="@+id/creation_compte_btnCancel"
-                android:layout_width="336dp"
-                android:layout_height="wrap_content"
-                android:text="Annuler" />
-
-
         </LinearLayout>
     </ScrollView>
+
 </android.support.constraint.ConstraintLayout>

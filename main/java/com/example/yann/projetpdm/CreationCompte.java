@@ -6,8 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
+import com.example.yann.projetpdm.Utils.FormHelper;
 import com.example.yann.projetpdm.classes.Personne;
 import com.example.yann.projetpdm.persistence.MyApp;
 
@@ -16,15 +16,9 @@ public class CreationCompte extends AppCompatActivity implements View.OnClickLis
     private EditText txtPrenom;
     private EditText txtNom;
     private EditText txtTel;
-    private TextView txtTelError;
     private EditText txtMail;
     private EditText txtPwd;
     private EditText txtPwd2;
-    private TextView txtPrenomError;
-    private TextView txtNomError;
-    private TextView txtMailError;
-    private TextView txtPwdError;
-    private TextView txtPwd2Error;
     private Button btnCancel;
     private Button btnValider;
 
@@ -42,12 +36,6 @@ public class CreationCompte extends AppCompatActivity implements View.OnClickLis
         txtMail = (EditText) findViewById(R.id.creation_compte_editMail);
         txtPwd = (EditText) findViewById(R.id.creation_compte_editPassword);
         txtPwd2 = (EditText) findViewById(R.id.creation_compte_editPassword2);
-        txtPrenomError = (TextView) findViewById(R.id.creation_compte_txtPrenomError);
-        txtNomError = (TextView) findViewById(R.id.creation_compte_txtNomError);
-        txtTelError = (TextView) findViewById(R.id.creation_compte_txtTelError);
-        txtMailError = (TextView) findViewById(R.id.creation_compte_txtMailError);
-        txtPwdError = (TextView) findViewById(R.id.creation_compte_txtPwdError);
-        txtPwd2Error = (TextView) findViewById(R.id.creation_compte_txtPwd2Error);
         btnCancel = (Button) findViewById(R.id.creation_compte_btnCancel);
         btnValider = (Button) findViewById(R.id.creation_compte_btnValider);
         btnValider.setOnClickListener(this);
@@ -91,7 +79,7 @@ public class CreationCompte extends AppCompatActivity implements View.OnClickLis
         return etText.getText().toString().trim().length() == 0;
     }
 
-    public String CHAMPS_VIDE = "Champs vide";
+
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
@@ -117,14 +105,12 @@ public class CreationCompte extends AppCompatActivity implements View.OnClickLis
 
     private boolean validationTxtNom() {
         boolean valide = false;
-        txtNomError.setVisibility(View.VISIBLE);
+        txtNom.setError(null);
         if(isEmpty(txtNom)){
-            txtNomError.setText(CHAMPS_VIDE);
+            txtNom.setError(FormHelper.CHAMPS_VIDE);
         } else if (!txtNom.getText().toString().trim().matches("^[A-Za-z]+[\\s\\-]?[A-Za-z]+$")){
-            txtNomError.setText("Plusieurs lettres, \"-\", \" \"");
+            txtNom.setError("Plusieurs lettres, \"-\", \" \"");
         } else {
-            txtNomError.setText("");
-            txtNomError.setVisibility(View.INVISIBLE);
             valide = true;
         }
         return true;
@@ -132,14 +118,12 @@ public class CreationCompte extends AppCompatActivity implements View.OnClickLis
 
     private boolean validationTxtPrenom() {
         boolean valide = false;
-        txtPrenomError.setVisibility(View.VISIBLE);
+        txtPrenom.setError(null);
         if(isEmpty(txtPrenom)){
-            txtPrenomError.setText(CHAMPS_VIDE);
+            txtPrenom.setError(FormHelper.CHAMPS_VIDE);
         } else if (!txtPrenom.getText().toString().trim().matches("^[A-Za-z]+[\\s\\-]?[A-Za-z]+$")){
-            txtPrenomError.setText("Plusieurs lettres, \"-\", \" \"");
+            txtPrenom.setError("Plusieurs lettres, \"-\", \" \"");
         } else {
-            txtPrenomError.setText("");
-            txtPrenomError.setVisibility(View.INVISIBLE);
             valide = true;
         }
         return valide;
@@ -147,14 +131,12 @@ public class CreationCompte extends AppCompatActivity implements View.OnClickLis
 
     private boolean validationTxtTel() {
         boolean valide = false;
-        txtTelError.setVisibility(View.VISIBLE);
+        txtTel.setError(null);
         if(isEmpty(txtTel)){
-            txtTelError.setText(CHAMPS_VIDE);
+            txtTel.setError(FormHelper.CHAMPS_VIDE);
         } else if (!txtTel.getText().toString().trim().matches("^[0-9]{10}$")){
-            txtTelError.setText("10 chiffres");
+            txtTel.setError("10 chiffres");
         } else {
-            txtTelError.setText("");
-            txtTelError.setVisibility(View.INVISIBLE);
             valide = true;
         }
         return true;
@@ -162,14 +144,12 @@ public class CreationCompte extends AppCompatActivity implements View.OnClickLis
 
     private boolean validationTxtMail() {
         boolean valide = false;
-        txtMailError.setVisibility(View.VISIBLE);
+        txtMail.setError(null);
         if(isEmpty(txtMail)){
-            txtMailError.setText(CHAMPS_VIDE);
+            txtMail.setError(FormHelper.CHAMPS_VIDE);
         } else if (!txtMail.getText().toString().trim().matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")){
-            txtMailError.setText("Mail invalide");
+            txtMail.setError("Mail invalide");
         } else {
-            txtMailError.setText("");
-            txtMailError.setVisibility(View.INVISIBLE);
             valide = true;
         }
         return valide;
@@ -177,12 +157,10 @@ public class CreationCompte extends AppCompatActivity implements View.OnClickLis
 
     private boolean validationTxtPwd() {
         boolean valide = false;
-        txtPwdError.setVisibility(View.VISIBLE);
+        txtPwd.setError(null);
         if(isEmpty(txtPwd)){
-            txtPwdError.setText(CHAMPS_VIDE);
+            txtPwd.setError(FormHelper.CHAMPS_VIDE);
         } else {
-            txtPwdError.setText("");
-            txtPwdError.setVisibility(View.INVISIBLE);
             valide = true;
         }
         return valide;
@@ -190,14 +168,12 @@ public class CreationCompte extends AppCompatActivity implements View.OnClickLis
 
     private boolean validationTxtPwd2() {
         boolean valide = false;
-        txtPwd2Error.setVisibility(View.VISIBLE);
+        txtPwd2.setError(null);
         if(isEmpty(txtPwd2)){
-            txtPwd2Error.setText(CHAMPS_VIDE);
+            txtPwd2.setError(FormHelper.CHAMPS_VIDE);
         } else if(!txtPwd.getText().toString().trim().contentEquals(txtPwd2.getText().toString().trim())){
-            txtPwd2Error.setText("Mots de passe différents");
+            txtPwd2.setError("Mots de passe différents");
         } else {
-            txtPwd2Error.setText("");
-            txtPwd2Error.setVisibility(View.INVISIBLE);
             valide = true;
         }
         return valide;

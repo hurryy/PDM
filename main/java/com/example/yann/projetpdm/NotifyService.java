@@ -11,7 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.example.yann.projetpdm.Helper.TimeHelper;
+import com.example.yann.projetpdm.Utils.TimeHelper;
 
 public class NotifyService extends Service {
 

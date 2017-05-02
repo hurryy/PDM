@@ -2,8 +2,8 @@ package com.example.yann.projetpdm.classes;
 
 import android.content.Context;
 
-import com.example.yann.projetpdm.Helper.DateHelper;
-import com.example.yann.projetpdm.Helper.TimeHelper;
+import com.example.yann.projetpdm.Utils.DateHelper;
+import com.example.yann.projetpdm.Utils.TimeHelper;
 import com.example.yann.projetpdm.persistence.TicketDAO;
 
 import java.text.SimpleDateFormat;
@@ -36,12 +36,25 @@ public class Ticket {
         this.idVoiture = idVoiture;
         this.idZone = idZone;
         this.tD = new TicketDAO(context);
-        this.enregistrer();
+        this.id = this.enregistrer();
     }
 
     public Ticket(Context context) {
         this.tD = new TicketDAO(context);
         this.id = tD.ajouter(this);
+    }
+
+    public Ticket(Context context, long id){
+        this.id = id;
+        this.tD = new TicketDAO(context);
+        Ticket t = tD.getTicket(id);
+        this.dateDemande = t.dateDemande;
+        this.heureDebut = t.heureDebut;
+        this.dureeInitiale = t.dureeInitiale;
+        this.dureeSupp = t.dureeSupp;
+        this.coutTotal = t.coutTotal;
+        this.idVoiture = t.idVoiture;
+        this.idZone = t.idZone;
     }
 
     public Ticket(Context context, long id, Long dateDemande, Long heureDebut, int dureeInitiale, int dureeSupp, float coutTotal, long idVoiture, long idZone) {
@@ -173,13 +186,23 @@ public class Ticket {
     }
 
     public long enregistrer(){
-        if(this.id != 0)
+        if(this.id != 0) {
             return tD.modifier(this);
-        else
+        }else {
             return tD.ajouter(this);
+        }
     }
 
     public void supprimer(){
         tD.supprimer(this);
+    }
+
+    public float calculMontantTotal(){
+        long date = new Date().getTime();
+        long temps;
+        temps = this.dureeSupp + this.dureeInitiale;
+        Zone z = new Zone(tD.getContext(),this.idZone);
+        float prix = z.getTarifHoraire() * ((float)temps/60f);
+        return prix;
     }
 }

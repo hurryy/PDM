@@ -18,9 +18,8 @@ import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-
-import com.example.yann.projetpdm.Helper.DateHelper;
-import com.example.yann.projetpdm.Helper.TimeHelper;
+import com.example.yann.projetpdm.Utils.DateHelper;
+import com.example.yann.projetpdm.Utils.TimeHelper;
 import com.example.yann.projetpdm.classes.Personne;
 import com.example.yann.projetpdm.classes.Ticket;
 import com.example.yann.projetpdm.classes.Voiture;
@@ -46,24 +45,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if (Personne.getConducteurs(getApplicationContext()).size() <= 0) {
-            Personne p12 = new Personne(getApplicationContext(), "Test", "test", "0606060606", "test@mail.com", "test", Personne.CONDUCTEUR);
-            Zone z1 = new Zone(getApplicationContext(), "parking UJF", 1.2f, "8:00", "18:00");
-            Zone z2 = new Zone(getApplicationContext(), "parking UGA", 0.5f, "9:00", "19:00");
-            Voiture v1 = new Voiture(getApplicationContext(), "EE-666-EE", "Karl", "Opel", "", "52", 1);
-        }
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if(!Personne.dejaConnecte(getApplication(),getApplicationContext())){
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-        }
-        List<String> connexions = ((MyApp)getApplication()).getStorageService().restore(getApplicationContext());
-        personneEnCours = new Personne(getApplicationContext(), Long.valueOf(connexions.get(0)));
-        if(personneEnCours.aTicketEnCours()) {
-            lunchTicketEnCours();   //Afficher la vue
-        }
-        initControls();
+
 
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -83,8 +65,32 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            /*Personne p12 = new Personne(getApplicationContext(), "Test", "test", "0606060606", "test@mail.com", "test", Personne.CONDUCTEUR);
+            Zone z1 = new Zone(getApplicationContext(), "parking UJF", 1.2f, "8:00", "18:00");
+            Zone z2 = new Zone(getApplicationContext(), "parking UGA", 0.5f, "9:00", "19:00");
+            Voiture v1 = new Voiture(getApplicationContext(), "EE-666-EE", "Karl", "Opel", "", "52", 1);*/
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        if(!Personne.dejaConnecte(getApplication(),getApplicationContext())){
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
+        List<String> connexions = ((MyApp)getApplication()).getStorageService().restore(getApplicationContext());
+        personneEnCours = new Personne(getApplicationContext(), Long.valueOf(connexions.get(0)));
+        if(personneEnCours.aTicketEnCours()) {
+            lunchTicketEnCours();   //Afficher la vue
+        }
+        initControls();
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -126,11 +132,19 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_tickets) {
-
+            Intent intent = new Intent(MainActivity.this, ListeTickets.class);
+            startActivity(intent);
         } else if (id == R.id.nav_voitures) {
-
-        } else if (id == R.id.nav_compte) {
-
+            Intent intent = new Intent(MainActivity.this, ListeVoitures.class);
+            startActivity(intent);
+        }else if (id == R.id.nav_ticket){
+            if(personneEnCours.aTicketEnCours()){
+                Intent intent = new Intent(MainActivity.this, TicketEnCours.class);
+                startActivity(intent);
+            }
+        } else if (id == R.id.nav_compte){
+                Intent intent = new Intent(MainActivity.this, MonCompte.class);
+                startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -179,8 +193,8 @@ public class MainActivity extends AppCompatActivity
         ArrayList<String> list2 = new ArrayList<>();
 
         if(voitures.size()<=0){
-            //creation voiture
-            t
+            Intent i = new Intent(this,CreationVoiture.class);
+            this.startActivity(i);
         }
 
         for (Voiture v : voitures) {
@@ -238,7 +252,7 @@ public class MainActivity extends AppCompatActivity
                 Long dateDemande = new Date().getTime();
                 ticket.setDateDemande(dateDemande);
                 ticket.setHeureDebut(dateDemande);
-                ticket.setCoutTotal(zones.get(spnZone.getSelectedItemPosition()).getTarifHoraire() * (ticket.getDureeInitiale() / 60));
+                ticket.setCoutTotal(ticket.calculMontantTotal());
                 ticket.enregistrer();
                 lunchTicketEnCours();
             }

@@ -37,7 +37,7 @@ public class TicketDAO {
                 " ); ";
 
     private Context context;
-
+    public Context getContext(){return context;}
     private String listeAttributs = this.KEY + ", " +
             this.dateDemande + ", " + this.heureDebut + ", " +
             this.dureeInitiale + ", " + this.dureeSupp +  ", " +
@@ -92,7 +92,8 @@ public class TicketDAO {
         ArrayList<Ticket> tickets = new ArrayList<Ticket>();
         SQLiteDatabase mDB = new DatabaseObject(context).open();
         Cursor c = mDB.rawQuery("select " + listeAttributs + " from " + this.TABLE_NAME +
-                " where "  + this.idVoiture + " = ?", new String[]{String.valueOf(this.idVoiture)});
+                " where "  + this.idVoiture + " = ? " +
+                " order by " + this.dateDemande + " desc", new String[]{String.valueOf(this.idVoiture)});
         while (c.moveToNext()) {
             tickets.add(cursorToTicket(c));
         }
@@ -105,7 +106,8 @@ public class TicketDAO {
         SQLiteDatabase mDB = new DatabaseObject(context).open();
         Cursor c = mDB.rawQuery("select v." + listeAttributs + " from " + this.TABLE_NAME + " t " +
                 "join Voiture v on t.idVoiture = v._ID" +
-                " where v." + VoitureDAO.idConducteur + " = ?"
+                " where v." + VoitureDAO.idConducteur + " = ? " +
+                " order by " + this.dateDemande + " desc"
                 , new String[]{String.valueOf(idPersonne)});
         while (c.moveToNext()) {
             tickets.add(cursorToTicket(c));
@@ -120,5 +122,15 @@ public class TicketDAO {
                 c.getInt(4), c.getFloat(5), c.getLong(6), c.getLong(7));
 
         return t;
+    }
+
+    public Ticket getTicket (long idTicket){
+        SQLiteDatabase mDB = new DatabaseObject(context).open();
+        Cursor c = mDB.rawQuery("select " + listeAttributs + " from " + this.TABLE_NAME +
+                " where " + this.KEY + " = ?" , new String[] {String.valueOf(idTicket)});
+        c.moveToNext();
+        Ticket v = cursorToTicket(c);
+        c.close();
+        return v;
     }
 }

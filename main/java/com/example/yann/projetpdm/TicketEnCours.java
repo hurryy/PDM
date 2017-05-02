@@ -20,8 +20,8 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import com.example.yann.projetpdm.Helper.DateHelper;
-import com.example.yann.projetpdm.Helper.TimeHelper;
+import com.example.yann.projetpdm.Utils.DateHelper;
+import com.example.yann.projetpdm.Utils.TimeHelper;
 import com.example.yann.projetpdm.classes.Personne;
 import com.example.yann.projetpdm.classes.Ticket;
 import com.example.yann.projetpdm.classes.Voiture;
@@ -72,7 +72,7 @@ public class TicketEnCours extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         List<String> connexions = ((MyApp)getApplication()).getStorageService().restore(getApplicationContext());
         personneEnCours = new Personne(getApplicationContext(), Long.valueOf(connexions.get(0)));
-        initControls();
+
                 /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +83,7 @@ public class TicketEnCours extends AppCompatActivity
         });*/
 
     }
+
 
 
     private void initControls(){
@@ -114,7 +115,7 @@ public class TicketEnCours extends AppCompatActivity
 
     public void initTextTime(){
         txtRemainTime.setText(TimeHelper.formatAffichageHeure(ticketEnCours.getTempsRestantMs()));
-        Date dateFin = DateHelper.convertMillisecondsToDate(ticketEnCours.getDateFin());
+        Date dateFin = DateHelper.convertMillisecondsToFullDate(ticketEnCours.getDateFin());
         String heureFin = "";
         heureFin += dateFin.getHours() < 10 ? "0"+dateFin.getHours() : dateFin.getHours();
         heureFin += ":";
@@ -171,11 +172,19 @@ public class TicketEnCours extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_tickets) {
-
+            Intent intent = new Intent(TicketEnCours.this, ListeTickets.class);
+            startActivity(intent);
         } else if (id == R.id.nav_voitures) {
-
-        } else if (id == R.id.nav_compte) {
-
+            Intent intent = new Intent(TicketEnCours.this, ListeVoitures.class);
+            startActivity(intent);
+        }else if (id == R.id.nav_ticket){
+            if(!personneEnCours.aTicketEnCours()){
+                Intent intent = new Intent(TicketEnCours.this, MainActivity.class);
+                startActivity(intent);
+            }
+        }else if (id == R.id.nav_compte){
+            Intent intent = new Intent(TicketEnCours.this, MonCompte.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -192,6 +201,7 @@ public class TicketEnCours extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        initControls();
         registerReceiver(mBroadcastReceiver, new IntentFilter(NotifyService.REFRESH_TIME_INTENT));
     }
 
@@ -246,6 +256,7 @@ public class TicketEnCours extends AppCompatActivity
             long hour = hourPicker.getValue();
             long minutes = minPicker.getValue();
             ticketEnCours.setDureeSupp(ticketEnCours.getDureeSupp() + TimeHelper.hourToMinutes(hour) + minutes);
+            ticketEnCours.setCoutTotal(ticketEnCours.calculMontantTotal());
             ticketEnCours.enregistrer();
             stopDialog();
             initControls();
@@ -256,18 +267,21 @@ public class TicketEnCours extends AppCompatActivity
         }
         if (v == btn15Min) {
             ticketEnCours.setDureeSupp(ticketEnCours.getDureeSupp() + 15);
+            ticketEnCours.setCoutTotal(ticketEnCours.calculMontantTotal());
             ticketEnCours.enregistrer();
             stopDialog();
             initControls();
         }
         if (v == btn30Min) {
             ticketEnCours.setDureeSupp(ticketEnCours.getDureeSupp() + 30);
+            ticketEnCours.setCoutTotal(ticketEnCours.calculMontantTotal());
             ticketEnCours.enregistrer();
             stopDialog();
             initControls();
         }
         if (v == btn1H) {
             ticketEnCours.setDureeSupp(ticketEnCours.getDureeSupp() + 60);
+            ticketEnCours.setCoutTotal(ticketEnCours.calculMontantTotal());
             ticketEnCours.enregistrer();
             stopDialog();
             initControls();
@@ -321,7 +335,7 @@ public class TicketEnCours extends AppCompatActivity
     }
 
     private void updateHeureFinDialog(){
-        Date dateFin = DateHelper.convertMillisecondsToDate(ticketEnCours.getDateFin());
+        Date dateFin = DateHelper.convertMillisecondsToFullDate(ticketEnCours.getDateFin());
         txtHeureFinDialog.setText(dateFin.getHours() + ":" + dateFin.getMinutes());
     }
 

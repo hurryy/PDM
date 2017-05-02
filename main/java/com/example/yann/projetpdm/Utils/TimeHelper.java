@@ -1,4 +1,4 @@
-package com.example.yann.projetpdm.Helper;
+package com.example.yann.projetpdm.Utils;
 
 public abstract class TimeHelper {
     public static final int SECOND = 0;
