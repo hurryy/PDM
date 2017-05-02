@@ -2,6 +2,8 @@ package com.example.yann.projetpdm.classes;
 
 import android.content.Context;
 
+import com.example.yann.projetpdm.Utils.DateHelper;
+import com.example.yann.projetpdm.Utils.TimeHelper;
 import com.example.yann.projetpdm.persistence.TicketDAO;
 
 import java.text.SimpleDateFormat;
@@ -18,8 +20,8 @@ public class Ticket {
     /**
      * duree en minute
      */
-    private int dureeInitiale;
-    private int dureeSupp;
+    private long dureeInitiale;
+    private long dureeSupp;
     private float coutTotal;
     private long idVoiture;
     private long idZone;
@@ -34,12 +36,25 @@ public class Ticket {
         this.idVoiture = idVoiture;
         this.idZone = idZone;
         this.tD = new TicketDAO(context);
-        this.enregistrer();
+        this.id = this.enregistrer();
     }
 
     public Ticket(Context context) {
         this.tD = new TicketDAO(context);
         this.id = tD.ajouter(this);
+    }
+
+    public Ticket(Context context, long id){
+        this.id = id;
+        this.tD = new TicketDAO(context);
+        Ticket t = tD.getTicket(id);
+        this.dateDemande = t.dateDemande;
+        this.heureDebut = t.heureDebut;
+        this.dureeInitiale = t.dureeInitiale;
+        this.dureeSupp = t.dureeSupp;
+        this.coutTotal = t.coutTotal;
+        this.idVoiture = t.idVoiture;
+        this.idZone = t.idZone;
     }
 
     public Ticket(Context context, long id, Long dateDemande, Long heureDebut, int dureeInitiale, int dureeSupp, float coutTotal, long idVoiture, long idZone) {
@@ -64,7 +79,7 @@ public class Ticket {
         Date dDebut = new Date();
         dDebut.setTime(dateDebut);
         Date dateFin = dDebut;
-        dateFin.setTime(dDebut.getTime() + DateHelper.convertMinToMilliseconds(this.getDureeInitiale()) + DateHelper.convertMinToMilliseconds(this.getDureeSupp()));
+        dateFin.setTime(dDebut.getTime() + TimeHelper.minToMilliseconds(this.getDureeInitiale()) + TimeHelper.minToMilliseconds(this.getDureeSupp()));
         return dateFin.getTime();
     }
 
@@ -113,22 +128,22 @@ public class Ticket {
     /**
      * duree initiale en minute
      */
-    public int getDureeInitiale() {
+    public long getDureeInitiale() {
         return dureeInitiale;
     }
 
-    public void setDureeInitiale(int dureeInitiale) {
+    public void setDureeInitiale(long dureeInitiale) {
         this.dureeInitiale = dureeInitiale;
     }
 
-    public int getDureeSupp() {
+    public long getDureeSupp() {
         return dureeSupp;
     }
 
     /**
      * duree supp en minute
      */
-    public void setDureeSupp(int dureeSupp) {
+    public void setDureeSupp(long dureeSupp) {
         this.dureeSupp = dureeSupp;
     }
 
@@ -136,9 +151,14 @@ public class Ticket {
      * Retourne le temps restant en minutes
      * @return nombre de minutes restantes
      */
-    public long getTempsRestant()
+    public long getTempsTotalRestantMin()
     {
-        return DateHelper.convertMillisecondsToMinutes(this.getDateFin()- new Date().getTime());
+        return TimeHelper.millisecondsToMinutes(this.getDateFin()- new Date().getTime());
+    }
+
+    public long getTempsRestantMs()
+    {
+        return this.getDateFin()- new Date().getTime();
     }
 
     public float getCoutTotal() {
@@ -166,14 +186,23 @@ public class Ticket {
     }
 
     public long enregistrer(){
-        if(this.id != 0)
+        if(this.id != 0) {
             return tD.modifier(this);
-        else
+        }else {
             return tD.ajouter(this);
+        }
     }
 
     public void supprimer(){
         tD.supprimer(this);
     }
 
+    public float calculMontantTotal(){
+        long date = new Date().getTime();
+        long temps;
+        temps = this.dureeSupp + this.dureeInitiale;
+        Zone z = new Zone(tD.getContext(),this.idZone);
+        float prix = z.getTarifHoraire() * ((float)temps/60f);
+        return prix;
+    }
 }

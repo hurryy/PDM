@@ -84,8 +84,11 @@ public class PersonneDAO {
         Cursor c = mDB.rawQuery("select " + listeAttributs + " from " + this.TABLE_NAME +
                 " where " + this.KEY + " = ?"
                 ,new String[]{String.valueOf(idPersonne)});
-        c.moveToNext();
-        Personne p = cursorToPersonne(c);
+        Personne p;
+        if(c.moveToNext())
+            p = cursorToPersonne(c);
+        else
+            return null;
         c.close();
         return p;
     }
@@ -124,5 +127,19 @@ public class PersonneDAO {
     public void supprimer(Personne p) {
         SQLiteDatabase mDB = new DatabaseObject(context).open();
         mDB.delete(TABLE_NAME, KEY + " = ?", new String[]{String.valueOf(p.getId())});
+    }
+
+    public Personne login(String email, String pass){
+        SQLiteDatabase mDB = new DatabaseObject(context).open();
+        Cursor c = mDB.rawQuery("select " + listeAttributs + " from " + this.TABLE_NAME +
+                        " where " + this.mail + " = ? and " + this.password + " =?"
+                ,new String[]{String.valueOf(email), String.valueOf(pass)});
+        Personne p;
+        if(c.moveToNext())
+            p = cursorToPersonne(c);
+        else
+            return null;
+        c.close();
+        return p;
     }
 }

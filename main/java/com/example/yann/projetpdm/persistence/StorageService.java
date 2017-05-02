@@ -2,7 +2,7 @@ package com.example.yann.projetpdm.persistence;
 
 import android.content.Context;
 
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * Created by Yann on 15/02/2017.
@@ -10,29 +10,35 @@ import java.util.List;
 
 public interface StorageService {
     /**
-     * Enregistre la liste des articles passés en paramètre.
-     * @param context contexte de l'activité.
-     * @param list liste des articles
-     * @return liste des articles sauvegardés par ordre alphabétique
+     *
+     * @param context
+     * @param Key
+     * @param Value
+     * @return
      */
-    public List<String> store(Context context, List<String> list);
+    public HashMap<String,String> store(Context context, String Key, String Value);
+
     /**
-     * Récupère la liste des articles sauvegardés.
-     * @param context contexte de l'activité
-     * @return liste des articles sauvegardés par ordre alphabétique
+     *
+     * @param context
+     * @param key
+     * @return
      */
-    public List<String> restore(Context context);
+    public HashMap<String, String> restore(Context context, String key);
     /**
      * Vide la liste des articles.
      * @param context contexte de l'activité
      * @return liste des articles vide.
      */
-    public List<String> clear(Context context);
+    public void clear(Context context);
+
+    public HashMap<String,String> add(Context context, String Key, String Value);
+
     /**
-     * Enregistre un nouvel article passé en paramètre.
-     * @param context contexte de l'activité
-     * @param article article
+     *
+     * @param context
+     * @param key
      */
-    public void add(Context context, String article);
+    public void remove(Context context, String key);
 
 }

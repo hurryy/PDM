@@ -1,7 +1,6 @@
 package com.example.yann.projetpdm;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,16 +18,18 @@ import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-
-import com.example.yann.projetpdm.classes.DateHelper;
+import com.example.yann.projetpdm.Utils.DateHelper;
+import com.example.yann.projetpdm.Utils.TimeHelper;
 import com.example.yann.projetpdm.classes.Personne;
 import com.example.yann.projetpdm.classes.Ticket;
 import com.example.yann.projetpdm.classes.Voiture;
 import com.example.yann.projetpdm.classes.Zone;
+import com.example.yann.projetpdm.persistence.MyApp;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,12 +45,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        personneEnCours = new Personne(getApplicationContext(), Long.valueOf(1));
-        if(personneEnCours.aTicketEnCours()) {
-            Intent intent = new Intent(MainActivity.this, TicketEnCours.class);  //Lancer l'activité DisplayVue
-            startActivity(intent);    //Afficher la vue
-        }
-        initControls();
+
 
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -69,8 +65,32 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            /*Personne p12 = new Personne(getApplicationContext(), "Test", "test", "0606060606", "test@mail.com", "test", Personne.CONDUCTEUR);
+            Zone z1 = new Zone(getApplicationContext(), "parking UJF", 1.2f, "8:00", "18:00");
+            Zone z2 = new Zone(getApplicationContext(), "parking UGA", 0.5f, "9:00", "19:00");
+            Voiture v1 = new Voiture(getApplicationContext(), "EE-666-EE", "Karl", "Opel", "", "52", 1);*/
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        if(!Personne.dejaConnecte(getApplication(),getApplicationContext())){
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
+        List<String> connexions = ((MyApp)getApplication()).getStorageService().restore(getApplicationContext());
+        personneEnCours = new Personne(getApplicationContext(), Long.valueOf(connexions.get(0)));
+        if(personneEnCours.aTicketEnCours()) {
+            lunchTicketEnCours();   //Afficher la vue
+        }
+        initControls();
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -97,7 +117,9 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            ((MyApp)getApplication()).getStorageService().clear(getApplicationContext());
+            Intent i = new Intent(this,LoginActivity.class);
+            this.startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);
@@ -109,18 +131,20 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.nav_tickets) {
+            Intent intent = new Intent(MainActivity.this, ListeTickets.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_voitures) {
+            Intent intent = new Intent(MainActivity.this, ListeVoitures.class);
+            startActivity(intent);
+        }else if (id == R.id.nav_ticket){
+            if(personneEnCours.aTicketEnCours()){
+                Intent intent = new Intent(MainActivity.this, TicketEnCours.class);
+                startActivity(intent);
+            }
+        } else if (id == R.id.nav_compte){
+                Intent intent = new Intent(MainActivity.this, MonCompte.class);
+                startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -150,30 +174,28 @@ public class MainActivity extends AppCompatActivity
     private void initNumberPickers() {
         NumberPicker nbPckH = (NumberPicker) findViewById(R.id.nbPckH);
         nbPckH.setMinValue(0);
-        nbPckH.setMaxValue(23);
+        nbPckH.setMaxValue(TimeHelper.MAX_HOUR);
         nbPckH.setValue(0);
         NumberPicker nbPckMin = (NumberPicker) findViewById(R.id.nbPckMin);
         nbPckMin.setMinValue(0);
-        nbPckMin.setMaxValue(59);
+        nbPckMin.setMaxValue(TimeHelper.MAX_MIN);
         nbPckMin.setValue(30);
     }
 
     private void initSpinners() {
-        if (Personne.getConducteurs(getApplicationContext()).size() <= 0) {
-            Personne p12 = new Personne(getApplicationContext(), "Test", "test", "0606060606", "test@mail.com", "test", Personne.CONDUCTEUR);
-            Zone z1 = new Zone(getApplicationContext(), "parking UJF", 1.2f, "8:00", "18:00");
-            Zone z2 = new Zone(getApplicationContext(), "parking UGA", 0.5f, "9:00", "19:00");
-            Voiture v1 = new Voiture(getApplicationContext(), "EE-666-EE", "Karl", "Opel", "", "52", 1);
-        }
 
         Spinner spnVoiture = (Spinner) findViewById(R.id.spnVoiture);
         Spinner spnZone = (Spinner) findViewById(R.id.spnZone);
-        Personne p1 = Personne.getConducteurs(getApplicationContext()).get(0);
-        voitures = Voiture.getVoituresConducteur(getApplicationContext(), p1.getId());
+        voitures = Voiture.getVoituresConducteur(getApplicationContext(), personneEnCours.getId());
         zones = Zone.getZones(getApplicationContext());
         final ArrayList<Zone> zs = zones;
         ArrayList<String> list = new ArrayList<String>();
         ArrayList<String> list2 = new ArrayList<>();
+
+        if(voitures.size()<=0){
+            Intent i = new Intent(this,CreationVoiture.class);
+            this.startActivity(i);
+        }
 
         for (Voiture v : voitures) {
             list.add(v.getImmatriculation());
@@ -230,7 +252,7 @@ public class MainActivity extends AppCompatActivity
                 Long dateDemande = new Date().getTime();
                 ticket.setDateDemande(dateDemande);
                 ticket.setHeureDebut(dateDemande);
-                ticket.setCoutTotal(zones.get(spnZone.getSelectedItemPosition()).getTarifHoraire() * (ticket.getDureeInitiale() / 60));
+                ticket.setCoutTotal(ticket.calculMontantTotal());
                 ticket.enregistrer();
                 lunchTicketEnCours();
             }

@@ -1,10 +1,13 @@
 package com.example.yann.projetpdm.classes;
 
+import android.app.Application;
 import android.content.Context;
 
+import com.example.yann.projetpdm.persistence.MyApp;
 import com.example.yann.projetpdm.persistence.PersonneDAO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Yann_TOUR on 25/03/2017.
@@ -31,9 +34,8 @@ public class Personne {
         this.mail = mail;
         this.password = password;
         this.role = CONDUCTEUR;
-        this.enregistrer();
+        this.id = this.enregistrer();
     }
-
     public Personne(Context context, String nom, String prenom, String tel, String mail, String password, String role) {
         this.pD = new PersonneDAO(context);
         this.nom = nom;
@@ -42,7 +44,7 @@ public class Personne {
         this.mail = mail;
         this.password = password;
         this.role = role;
-        this.enregistrer();
+        this.id = this.enregistrer();
     }
     public Personne(Context context, long id) {
         this.pD = new PersonneDAO(context);
@@ -146,5 +148,16 @@ public class Personne {
 
     public ArrayList<Ticket> getTickets(){
         return Ticket.getTickets(pD.getContext(),this.id);
+    }
+
+    public static Personne login(Context context, String email, String password){
+        return new PersonneDAO(context).login(email,password);
+    }
+
+    public static boolean dejaConnecte(Application app, Context context){
+        List<String> connexions = ((MyApp)app).getStorageService().restore(context);
+        if(connexions.size() == 1)
+            return true;
+        return false;
     }
 }

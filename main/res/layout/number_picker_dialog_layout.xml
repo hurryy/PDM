@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:holo="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/number_picker_dialog_layout_lblHeureFin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Heure de fin initiale" />
+
+        <TextView
+            android:id="@+id/number_picker_dialog_layout_txtHeureFin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="TextView" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:transformPivotX="@dimen/fab_margin"
+        android:layout_marginTop="0dp">
+
+        <TextView
+            android:text="Pronlonger de "
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/number_picker_dialog_layout_txtDuree"
+            android:layout_weight="1"
+            android:gravity="center" />
+
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/number_picker_dialog_layout_nbPckH"
+            android:layout_weight="1" />
+
+        <TextView
+            android:text="h"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/number_picker_dialog_layout_txtHour"
+            android:layout_weight="1"
+            android:gravity="center" />
+
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/number_picker_dialog_layout_nbPckMin"
+            android:layout_weight="1"
+            />
+
+        <TextView
+            android:text="min"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/number_picker_dialog_layout_txtMin"
+            android:layout_weight="1"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/number_picker_dialog_layout_15Min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="+15min" />
+
+        <Button
+            android:id="@+id/number_picker_dialog_layout_30MIN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="+30min" />
+
+        <Button
+            android:id="@+id/number_picker_dialog_layout_1H"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="+1h" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/number_picker_dialog_layout_btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Annuler" />
+
+        <Button
+            android:id="@+id/number_picker_dialog_layout_btnValider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ok" />
+
+    </LinearLayout>
+
+</LinearLayout>

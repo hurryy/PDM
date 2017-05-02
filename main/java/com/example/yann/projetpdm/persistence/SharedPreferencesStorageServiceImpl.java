@@ -12,8 +12,8 @@ import java.util.Set;
  * Created by Yann on 15/02/2017.
  */
 
-public class SharedPreferencesStorageServiceImpl implements StorageService {
-    public static String NAME = "articles";
+public class SharedPreferencesStorageServiceImpl implements StorageServiceOld {
+    public static String NAME = "connexion";
     private String PREFS_NAME = "prefsFile.txt";
     @Override
     public List<String> store(Context context, List<String> listIn) {
@@ -38,6 +38,7 @@ public class SharedPreferencesStorageServiceImpl implements StorageService {
     public List<String> clear(Context context) {
         SharedPreferences.Editor editor = initSetConnection(context);
         editor.clear();
+        editor.commit();
         return restore(context);
     }
 
